@@ -1,14 +1,12 @@
-import os
-from openai import OpenAI
-from openai import RateLimitError
-from dotenv import load_dotenv
+from openai import OpenAI, RateLimitError
+
 from app.core.config import settings
 
-load_dotenv()
 
 client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
+    api_key=settings.OPENAI_API_KEY
 )
+
 
 def generate_ai_reply(message: str) -> str:
 
@@ -19,7 +17,7 @@ def generate_ai_reply(message: str) -> str:
             messages=[
                 {
                     "role": "system",
-                    "content": "你是一个专业AI客服"
+                    "content": "你是一个专业的 AI 客服"
                 },
                 {
                     "role": "user",
@@ -31,12 +29,12 @@ def generate_ai_reply(message: str) -> str:
         content = response.choices[0].message.content
 
         if content is None:
-            return "AI没有返回内容"
+            return "AI 没有返回内容"
 
         return content
 
     except RateLimitError:
-        return "当前AI服务额度不足，请稍后再试"
+        return "当前 AI 服务额度不足，请稍后再试"
 
     except Exception as e:
         return f"发生错误: {str(e)}"

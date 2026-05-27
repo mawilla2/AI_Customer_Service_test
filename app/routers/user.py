@@ -1,31 +1,21 @@
-from fastapi import APIRouter, Depends
-
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from app.database import SessionLocal
-
+from app.core.dependencies import get_db
+from app.core.security import create_access_token, verify_password
+from app.crud.user_crud import (
+    create_user,
+    get_user_by_username
+)
 from app.schemas.user_schema import (
+    Token,
     UserCreate,
     UserResponse
 )
 
-from app.crud.user_crud import create_user
-
 
 router = APIRouter()
-
-
-def get_db():
-
-    db = SessionLocal()
-
-    try:
-
-        yield db
-
-    finally:
-
-        db.close()
 
 
 @router.post(
@@ -37,40 +27,29 @@ def register(
     db: Session = Depends(get_db)
 ):
 
+    existing_user = get_user_by_username(db, user.username)
+
+    if existing_user:
+        raise HTTPException(
+            status_code=400,
+            detail="Username already registered"
+        )
+
     return create_user(db, user)
 
-
-from fastapi import HTTPException
-
-from app.schemas.user_schema import (
-    UserCreate,
-    UserResponse,
-    UserLogin,
-    Token
-)
-
-from app.crud.user_crud import (
-    create_user,
-    get_user_by_username
-)
-
-from app.core.security import (
-    verify_password,
-    create_access_token
-)
 
 @router.post(
     "/login",
     response_model=Token
 )
 def login(
-    user: UserLogin,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
 
     db_user = get_user_by_username(
         db,
-        user.username
+        form_data.username
     )
 
     if not db_user:
@@ -81,8 +60,8 @@ def login(
         )
 
     if not verify_password(
-        user.password,
-        db_user.hashed_password # type: ignore
+        form_data.password,
+        db_user.hashed_password  # type: ignore
     ):
 
         raise HTTPException(
