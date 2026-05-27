@@ -8,6 +8,10 @@ class Settings(BaseSettings):
 
     OPENAI_MODEL: str = "gpt-4.1-mini"
 
+    SECRET_KEY: str
+
+    ALGORITHM: str = "HS256"
+
     model_config = SettingsConfigDict(
         env_file=".env"
     )
