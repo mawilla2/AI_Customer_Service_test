@@ -20,3 +20,7 @@ def create_chat_history(
     db.refresh(chat)
 
     return chat
+
+def get_chat_history(db: Session):
+
+    return db.query(ChatHistory).all()
