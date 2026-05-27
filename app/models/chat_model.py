@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String,Text
 
 from app.database import Base
 
@@ -8,6 +8,6 @@ class ChatHistory(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    user_message = Column(String)
+    user_message = Column(Text)
 
-    ai_reply = Column(String)
+    ai_reply = Column(Text)
