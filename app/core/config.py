@@ -4,7 +4,7 @@ class Settings(BaseSettings):
 
     OPENAI_API_KEY: str
 
-    DATABASE_URL: str = "sqlite:///./chat.db"
+    DATABASE_URL: str
 
     OPENAI_MODEL: str = "gpt-4.1-mini"
 
