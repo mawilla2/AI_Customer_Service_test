@@ -2,6 +2,7 @@ import os
 from openai import OpenAI
 from openai import RateLimitError
 from dotenv import load_dotenv
+from app.core.config import settings
 
 load_dotenv()
 
@@ -14,7 +15,7 @@ def generate_ai_reply(message: str) -> str:
     try:
 
         response = client.chat.completions.create(
-            model="gpt-4.1-mini",
+            model=settings.OPENAI_MODEL,
             messages=[
                 {
                     "role": "system",
