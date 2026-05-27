@@ -24,6 +24,7 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 from app.database import Base
 from app.models.chat_model import ChatHistory
+from app.models.user_model import User
 
 target_metadata = Base.metadata
 
